@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import TruffleContract from '@truffle/contract';
 import SCHEMA_CONTRATO from './Crowdfunding.json';
 import './App.css';
@@ -113,6 +113,27 @@ function App() {
     })();
   }, []);
 
+  const solicitar = useCallback(async (wei, limiteEmSegundos) => {
+    try {
+
+      setState({ status: 'processando' });
+      const contrato = await Crowdfunding.at(ENDERECO_CONTRATO);
+      await contrato.solicitar(wei, limiteEmSegundos, {
+        from: window['ethereum'].selectedAddress
+      });
+      setState({ status: 'carregando' });
+      const projetos = await buscarProjetos();
+      setState({
+        status: 'pronto',
+        projetos
+      });
+
+    } catch (err) {
+      console.error(err);
+      setState({ status: 'erro', mensagem: err.message || err.toString() });
+    }
+  }, []);
+
   return (
     <div>
       {state.status === 'inicializando' && (
@@ -130,16 +151,18 @@ function App() {
       {state.status === 'pronto' && (
         <>
           <div>
-            <button>Solicitar 100 wei em 10 segundos</button>
-            <button>Solicitar 1 ETH em 10 minutos</button>
+            <button onClick={() => solicitar(100, 10)}>
+              Solicitar 100 wei em 10 segundos
+              </button>
+            <button onClick={() => solicitar('1000000000000000000', 10 * 60)}>
+              Solicitar 1 ETH em 10 minutos
+            </button>
           </div>
           <h1>Projetos</h1>
           {state.projetos.map((projeto, index) => (
             <div
               key={index}
               className='projeto'
-              style={{
-              }}
             >
               <p>
                 <strong>Projeto #{index}</strong><br />
@@ -160,7 +183,7 @@ function App() {
                 )}
               </p>
               <p>
-                {meu(projeto) && (
+                {!meu(projeto) && (
                   <>
                     {projeto.ativo && !expirado(projeto) && !arrecadado(projeto) && (
                       <>
@@ -169,13 +192,13 @@ function App() {
                         <button>Contribuir 1 ETH</button>
                       </>
                     )}
-                    {arrecadado(projeto) && (
-                      <button>Resgatar</button>
+                    {expirado(projeto) && (
+                      <button>Recuperar</button>
                     )}
                   </>
                 )}
-                {!meu(projeto) && expirado(projeto) && (
-                  <button>Recuperar</button>
+                {meu(projeto) && arrecadado(projeto) && (
+                  <button>Resgatar</button>
                 )}
               </p>
             </div>
