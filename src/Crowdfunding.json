@@ -1,0 +1,107 @@
+{
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "idProjeto",
+          "type": "uint256"
+        }
+      ],
+      "name": "contribuir",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "idProjeto",
+          "type": "uint256"
+        }
+      ],
+      "name": "recuperarMinhasContribuicoes",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "idProjeto",
+          "type": "uint256"
+        }
+      ],
+      "name": "resgatar",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_wei",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "limiteEmSegundos",
+          "type": "uint256"
+        }
+      ],
+      "name": "solicitar",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "todosOsProjetos",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "solicitante",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "weiSolicitado",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "weiObtido",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "timestampLimite",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bool",
+              "name": "ativo",
+              "type": "bool"
+            }
+          ],
+          "internalType": "struct Crowdfunding.Projeto[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ]
+}
