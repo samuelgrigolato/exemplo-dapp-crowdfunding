@@ -3,8 +3,11 @@ import TruffleContract from '@truffle/contract';
 import SCHEMA_CONTRATO from './Crowdfunding.json';
 import './App.css';
 
+//0x6C19bDcb7aDec160F17E6ed2eeaEAb01411E431e
+
 function meu(projeto) {
-  return window['ethereum'].selectedAddress.toLowerCase() === projeto.solicitante.toLowerCase();
+  //return window['ethereum'].selectedAddress.toLowerCase() === projeto.solicitante.toLowerCase();
+  throw new Error('não implementado ainda');
 }
 
 function expirado(projeto) {
@@ -88,17 +91,19 @@ function App() {
   // });
 
   useEffect(() => {
-    if (!window['ethereum']) {
-      setState({ status: 'erro', mensagem: 'Habilite/instale a extensão MetaMask e tente novamente' });
-      return;
-    }
+    // if (!window['ethereum']) {
+    //   setState({ status: 'erro', mensagem: 'Habilite/instale a extensão MetaMask e tente novamente' });
+    //   return;
+    // }
     (async () => {
       try {
 
-        await window['ethereum'].enable();
-        setState({ status: 'carregando' });
+        throw new Error('não implementado ainda...');
+        // await window['ethereum'].enable();
 
-        Crowdfunding.setProvider(window['ethereum']);
+        // setState({ status: 'carregando' });
+
+        // Crowdfunding.setProvider(window['ethereum']);
 
         const projetos = await buscarProjetos();
         setState({
@@ -117,10 +122,11 @@ function App() {
     try {
 
       setState({ status: 'processando' });
-      const contrato = await Crowdfunding.at(ENDERECO_CONTRATO);
-      await contrato.solicitar(wei, limiteEmSegundos, {
-        from: window['ethereum'].selectedAddress
-      });
+      throw new Error('não implementado ainda...');
+      // const contrato = await Crowdfunding.at(ENDERECO_CONTRATO);
+      // await contrato.solicitar(wei, limiteEmSegundos, {
+      //   from: window['ethereum'].selectedAddress
+      // });
       setState({ status: 'carregando' });
       const projetos = await buscarProjetos();
       setState({
@@ -138,11 +144,12 @@ function App() {
     try {
 
       setState({ status: 'processando' });
-      const contrato = await Crowdfunding.at(ENDERECO_CONTRATO);
-      await contrato.contribuir(idProjeto, {
-        value: wei,
-        from: window['ethereum'].selectedAddress
-      });
+      throw new Error('não implementado ainda...');
+      // const contrato = await Crowdfunding.at(ENDERECO_CONTRATO);
+      // await contrato.contribuir(idProjeto, {
+      //   value: wei,
+      //   from: window['ethereum'].selectedAddress
+      // });
       setState({ status: 'carregando' });
       const projetos = await buscarProjetos();
       setState({
@@ -160,10 +167,11 @@ function App() {
     try {
 
       setState({ status: 'processando' });
-      const contrato = await Crowdfunding.at(ENDERECO_CONTRATO);
-      await contrato.resgatar(idProjeto, {
-        from: window['ethereum'].selectedAddress
-      });
+      throw new Error('não implementado ainda...');
+      // const contrato = await Crowdfunding.at(ENDERECO_CONTRATO);
+      // await contrato.resgatar(idProjeto, {
+      //   from: window['ethereum'].selectedAddress
+      // });
       setState({ status: 'carregando' });
       const projetos = await buscarProjetos();
       setState({
@@ -181,10 +189,11 @@ function App() {
     try {
 
       setState({ status: 'processando' });
-      const contrato = await Crowdfunding.at(ENDERECO_CONTRATO);
-      await contrato.recuperarMinhasContribuicoes(idProjeto, {
-        from: window['ethereum'].selectedAddress
-      });
+      throw new Error('não implementado ainda...');
+      // const contrato = await Crowdfunding.at(ENDERECO_CONTRATO);
+      // await contrato.recuperarMinhasContribuicoes(idProjeto, {
+      //   from: window['ethereum'].selectedAddress
+      // });
       setState({ status: 'carregando' });
       const projetos = await buscarProjetos();
       setState({
