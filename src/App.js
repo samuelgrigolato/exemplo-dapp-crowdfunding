@@ -1,13 +1,20 @@
 import { useCallback, useEffect, useState } from 'react';
 import TruffleContract from '@truffle/contract';
+import WalletConnectProvider from "@walletconnect/web3-provider";
+import Web3 from "web3";
 import SCHEMA_CONTRATO from './Crowdfunding.json';
 import './App.css';
 
-//0x6C19bDcb7aDec160F17E6ed2eeaEAb01411E431e
+const ENDERECO_ROPSTEN = '0x6C19bDcb7aDec160F17E6ed2eeaEAb01411E431e';
+
+const provider = new WalletConnectProvider({
+  infuraId: "b46382ca47364b21b6ed9379fc70f023",
+  chainId: 3 /*ropsten*/
+});
 
 function meu(projeto) {
   //return window['ethereum'].selectedAddress.toLowerCase() === projeto.solicitante.toLowerCase();
-  throw new Error('não implementado ainda');
+  return provider.accounts[0].toLowerCase() === projeto.solicitante.toLowerCase();
 }
 
 function expirado(projeto) {
@@ -18,12 +25,96 @@ function arrecadado(projeto) {
   return projeto.weiObtido >= projeto.weiSolicitado;
 }
 
-const ENDERECO_CONTRATO = '0x469a6540fb77b118e38a38C8881375101107811c';
-const Crowdfunding = TruffleContract(SCHEMA_CONTRATO);
+// const ENDERECO_CONTRATO = '0x469a6540fb77b118e38a38C8881375101107811c';
+// const Crowdfunding = TruffleContract(SCHEMA_CONTRATO);
 
 async function buscarProjetos() {
-  const contrato = await Crowdfunding.at(ENDERECO_CONTRATO);
-  const projetos = await contrato.todosOsProjetos();
+  // const contrato = await Crowdfunding.at(ENDERECO_CONTRATO);
+  // const projetos = await contrato.todosOsProjetos();
+
+  const web3 = new Web3(provider);
+  const projetosEncoded = await web3.eth.call({
+    from: provider.accounts[0],
+    to: ENDERECO_ROPSTEN,
+    data: web3.eth.abi.encodeFunctionCall(
+      {
+        "inputs": [],
+        "name": "todosOsProjetos",
+        "outputs": [
+          {
+            "components": [
+              {
+                "internalType": "address",
+                "name": "solicitante",
+                "type": "address"
+              },
+              {
+                "internalType": "uint256",
+                "name": "weiSolicitado",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "weiObtido",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "timestampLimite",
+                "type": "uint256"
+              },
+              {
+                "internalType": "bool",
+                "name": "ativo",
+                "type": "bool"
+              }
+            ],
+            "internalType": "struct Crowdfunding.Projeto[]",
+            "name": "",
+            "type": "tuple[]"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      []
+    )
+  });
+  const projetos = web3.eth.abi.decodeParameter(
+    {
+      "components": [
+        {
+          "internalType": "address",
+          "name": "solicitante",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "weiSolicitado",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "weiObtido",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "timestampLimite",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "ativo",
+          "type": "bool"
+        }
+      ],
+      "internalType": "struct Crowdfunding.Projeto[]",
+      "name": "",
+      "type": "tuple[]"
+    },
+    projetosEncoded
+  );
   return projetos.map(projeto => ({
     ativo: projeto.ativo,
     solicitante: projeto.solicitante,
@@ -98,7 +189,7 @@ function App() {
     (async () => {
       try {
 
-        throw new Error('não implementado ainda...');
+        await provider.enable();
         // await window['ethereum'].enable();
 
         // setState({ status: 'carregando' });
