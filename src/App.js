@@ -213,11 +213,44 @@ function App() {
     try {
 
       setState({ status: 'processando' });
-      throw new Error('não implementado ainda...');
+      
+      const web3 = new Web3(provider);
+      await web3.eth.sendTransaction({
+        from: provider.accounts[0],
+        to: ENDERECO_ROPSTEN,
+        data: web3.eth.abi.encodeFunctionCall(
+          {
+            "inputs": [
+              {
+                "internalType": "uint256",
+                "name": "_wei",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "limiteEmSegundos",
+                "type": "uint256"
+              }
+            ],
+            "name": "solicitar",
+            "outputs": [
+              {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+              }
+            ],
+            "stateMutability": "nonpayable",
+            "type": "function"
+          },
+          [wei, limiteEmSegundos]
+        )
+      });
       // const contrato = await Crowdfunding.at(ENDERECO_CONTRATO);
       // await contrato.solicitar(wei, limiteEmSegundos, {
       //   from: window['ethereum'].selectedAddress
       // });
+
       setState({ status: 'carregando' });
       const projetos = await buscarProjetos();
       setState({
