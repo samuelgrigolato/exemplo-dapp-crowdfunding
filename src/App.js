@@ -314,11 +314,33 @@ function App() {
     try {
 
       setState({ status: 'processando' });
-      throw new Error('não implementado ainda...');
+
+      const web3 = new Web3(provider);
+      await web3.eth.sendTransaction({
+        from: provider.accounts[0],
+        to: ENDERECO_ROPSTEN,
+        data: web3.eth.abi.encodeFunctionCall(
+          {
+            "inputs": [
+              {
+                "internalType": "uint256",
+                "name": "idProjeto",
+                "type": "uint256"
+              }
+            ],
+            "name": "resgatar",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+          },
+          [idProjeto]
+        )
+      });
       // const contrato = await Crowdfunding.at(ENDERECO_CONTRATO);
       // await contrato.resgatar(idProjeto, {
       //   from: window['ethereum'].selectedAddress
       // });
+
       setState({ status: 'carregando' });
       const projetos = await buscarProjetos();
       setState({
@@ -336,11 +358,33 @@ function App() {
     try {
 
       setState({ status: 'processando' });
-      throw new Error('não implementado ainda...');
+
+      const web3 = new Web3(provider);
+      await web3.eth.sendTransaction({
+        from: provider.accounts[0],
+        to: ENDERECO_ROPSTEN,
+        data: web3.eth.abi.encodeFunctionCall(
+          {
+            "inputs": [
+              {
+                "internalType": "uint256",
+                "name": "idProjeto",
+                "type": "uint256"
+              }
+            ],
+            "name": "recuperarMinhasContribuicoes",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+          },
+          [idProjeto]
+        )
+      });
       // const contrato = await Crowdfunding.at(ENDERECO_CONTRATO);
       // await contrato.recuperarMinhasContribuicoes(idProjeto, {
       //   from: window['ethereum'].selectedAddress
       // });
+
       setState({ status: 'carregando' });
       const projetos = await buscarProjetos();
       setState({
