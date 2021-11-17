@@ -134,6 +134,70 @@ function App() {
     }
   }, []);
 
+  const contribuir = useCallback(async (idProjeto, wei) => {
+    try {
+
+      setState({ status: 'processando' });
+      const contrato = await Crowdfunding.at(ENDERECO_CONTRATO);
+      await contrato.contribuir(idProjeto, {
+        value: wei,
+        from: window['ethereum'].selectedAddress
+      });
+      setState({ status: 'carregando' });
+      const projetos = await buscarProjetos();
+      setState({
+        status: 'pronto',
+        projetos
+      });
+
+    } catch (err) {
+      console.error(err);
+      setState({ status: 'erro', mensagem: err.message || err.toString() });
+    }
+  }, []);
+
+  const resgatar = useCallback(async (idProjeto) => {
+    try {
+
+      setState({ status: 'processando' });
+      const contrato = await Crowdfunding.at(ENDERECO_CONTRATO);
+      await contrato.resgatar(idProjeto, {
+        from: window['ethereum'].selectedAddress
+      });
+      setState({ status: 'carregando' });
+      const projetos = await buscarProjetos();
+      setState({
+        status: 'pronto',
+        projetos
+      });
+
+    } catch (err) {
+      console.error(err);
+      setState({ status: 'erro', mensagem: err.message || err.toString() });
+    }
+  }, []);
+
+  const recuperar = useCallback(async (idProjeto) => {
+    try {
+
+      setState({ status: 'processando' });
+      const contrato = await Crowdfunding.at(ENDERECO_CONTRATO);
+      await contrato.recuperarMinhasContribuicoes(idProjeto, {
+        from: window['ethereum'].selectedAddress
+      });
+      setState({ status: 'carregando' });
+      const projetos = await buscarProjetos();
+      setState({
+        status: 'pronto',
+        projetos
+      });
+
+    } catch (err) {
+      console.error(err);
+      setState({ status: 'erro', mensagem: err.message || err.toString() });
+    }
+  }, []);
+
   return (
     <div>
       {state.status === 'inicializando' && (
@@ -187,18 +251,24 @@ function App() {
                   <>
                     {projeto.ativo && !expirado(projeto) && !arrecadado(projeto) && (
                       <>
-                        <button>Contribuir 40 wei</button>
-                        <button>Contribuir 150 wei</button>
-                        <button>Contribuir 1 ETH</button>
+                        <button onClick={() => contribuir(index, 40)}>
+                          Contribuir 40 wei
+                        </button>
+                        <button onClick={() => contribuir(index, 150)}>
+                          Contribuir 150 wei
+                        </button>
+                        <button onClick={() => contribuir(index, '1000000000000000000')}>
+                          Contribuir 1 ETH
+                        </button>
                       </>
                     )}
                     {expirado(projeto) && (
-                      <button>Recuperar</button>
+                      <button onClick={() => recuperar(index)}>Recuperar</button>
                     )}
                   </>
                 )}
-                {meu(projeto) && arrecadado(projeto) && (
-                  <button>Resgatar</button>
+                {meu(projeto) && projeto.ativo && arrecadado(projeto) && (
+                  <button onClick={() => resgatar(index)}>Resgatar</button>
                 )}
               </p>
             </div>
